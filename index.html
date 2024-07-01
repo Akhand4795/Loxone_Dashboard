@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loxone Miniserver Dashboard</title>
+    <style>
+        #status {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Loxone Miniserver Dashboard</h1>
+    <button id="toggleButton">Toggle Light</button>
+    <div id="status">Status: Unknown</div>
+
+    <script>
+        const wsURL = `ws://116.203.7.175/ws/rfc6455`;
+        const ws = new WebSocket(wsURL, 'remotecontrol');
+
+        ws.onopen = function() {
+            console.log('WebSocket connection opened');
+        };
+
+        ws.onmessage = function(event) {
+            console.log('Message from server:', event.data);
+            document.getElementById('status').innerText = `Status: ${event.data}`;
+        };
+
+        ws.onclose = function() {
+            console.log('WebSocket connection closed');
+        };
+
+        ws.onerror = function(error) {
+            console.error('WebSocket error:', error);
+        };
+
+        document.getElementById('toggleButton').addEventListener('click', () => {
+            ws.send('jdev/sps/io/1d043dbf-0321-eea3-ffffcb0481ff57c7');
+        });
+    </script>
+</body>
+</html>
